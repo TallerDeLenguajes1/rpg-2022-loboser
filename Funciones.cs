@@ -46,7 +46,7 @@ namespace RPG
             "Tipo: " + Personaje.Datos.Tipo + " \n" +
             "Nombre: " + Personaje.Datos.Nombre + " " +
             Personaje.Datos.Apodo + " \n" +
-            "Fecha de Nacimiento: " + Personaje.Datos.FechaDeNacimiento + " \n" +
+            "Fecha de Nacimiento: " + Personaje.Datos.FechaDeNacimiento.Day + "/" + Personaje.Datos.FechaDeNacimiento.Month + "/" + Personaje.Datos.FechaDeNacimiento.Year + " \n" +
             "Edad: " + Personaje.Datos.Edad + " \n" +
             "Salud: " + Personaje.Datos.Salud + " \n";
 
@@ -89,6 +89,66 @@ namespace RPG
                 Informe = "OHH NOOO!! " + Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " ha realizado un GOLPE CRITICO!! contra " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " costandole " + Daño + " puntos de salud" + "\n";
             }
             return Informe;
+        }
+
+        public Personaje Ganador(Personaje Luchador1,Personaje Luchador2, List<Personaje> ListaDePersonajes){
+            if (Luchador1.Datos.Salud > Luchador2.Datos.Salud)
+            {
+                Luchador1.Datos.Salud = (int)Maximos.SaludMax;
+                ListaDePersonajes.Remove(Luchador2);
+                return Luchador1;
+            }
+            else if(Luchador2.Datos.Salud > Luchador1.Datos.Salud)
+            {
+                Luchador2.Datos.Salud = (int)Maximos.SaludMax;
+                ListaDePersonajes.Remove(Luchador1);
+                return Luchador2;
+            }
+            else
+            {
+                Console.WriteLine("Esto es increibleee!! terminó en un empate!!, para desempatar se realizara un duelo de un golpe!!");
+
+                Luchador1.Datos.Salud = (int)Maximos.SaludMax;
+                Luchador2.Datos.Salud = (int)Maximos.SaludMax;
+
+                Console.WriteLine(Combate(Luchador1, Luchador2));
+                Console.WriteLine(Combate(Luchador2, Luchador1));
+
+                return Ganador(Luchador1, Luchador2, ListaDePersonajes);
+            }
+        }
+
+        public string RecompensaAleatoria(Personaje Ganador)
+        {
+            string recompensa;
+
+            switch (new Random().Next(1,5))
+            {
+                case 1:
+                    Ganador.Caracteristicas.Velocidad += 3;
+                    recompensa = " y ha recibido un aumento de 3 puntos de VELOCIDAD como recompensa aleatoria!";
+                    break;
+                case 2:
+                    Ganador.Caracteristicas.Destreza += 2;
+                    recompensa = " y ha recibido un aumento de 2 puntos de DESTREZA como recompensa aleatoria!";
+                    break;
+                case 3:
+                    Ganador.Caracteristicas.Fuerza += 3;
+                    recompensa = " y ha recibido un aumento de 3 puntos de FUERZA como recompensa aleatoria!";
+                    break;
+                case 4:
+                    Ganador.Caracteristicas.Nivel += 3;
+                    recompensa = " y ha recibido un aumento de 3 NIVELES como recompensa aleatoria!";
+                    break;
+                case 5:
+                    Ganador.Caracteristicas.Armadura += 3;
+                    recompensa = " y ha recibido un aumento de 3 puntos de ARMADURA como recompensa aleatoria!";
+                    break;
+                default:
+                    recompensa = "";
+                    break;
+            }
+            return "\n" + Ganador.Datos.Nombre + " " + Ganador.Datos.Apodo + recompensa + "\n";
         }
 
         public DateTime GenerarFecha()

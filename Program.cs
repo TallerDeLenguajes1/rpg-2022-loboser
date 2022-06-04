@@ -33,24 +33,46 @@ namespace RPG
             Console.ReadLine();
             Console.Clear();
             
-
             int rand1=0,rand2=0;
-            Personaje Luchador1;
-            Personaje Luchador2;
+            Personaje Ganador, Luchador1, Luchador2;
+
             do
             {
-                rand1 = new Random().Next(CantidadDePersonajes);
-                rand2 = new Random().Next(CantidadDePersonajes);
+                do
+                {
+                    rand1 = new Random().Next(CantidadDePersonajes);
+                    rand2 = new Random().Next(CantidadDePersonajes);
+                } while (rand1==rand2);
 
                 Luchador1 = ListaDePersonajes[rand1];
                 Luchador2 = ListaDePersonajes[rand2];
-            } while (rand1==rand2);
 
-            for (int i = 0; i < 3; i++)
-            {
-                Console.WriteLine(Funcion.Combate(Luchador1, Luchador2));
-                Console.WriteLine(Funcion.Combate(Luchador2, Luchador1));
-            }
+                for (int i = 0; i < 3; i++)
+                {
+                    Console.WriteLine(Funcion.Combate(Luchador1, Luchador2));
+                    Console.WriteLine(Funcion.Combate(Luchador2, Luchador1));
+                }
+
+                Console.WriteLine("\nEl Ganador del combate es...");
+                Console.ReadLine();
+
+                Ganador = Funcion.Ganador(Luchador1, Luchador2, ListaDePersonajes);
+                CantidadDePersonajes--;
+                if (CantidadDePersonajes != 1)
+                {
+                    Console.WriteLine(Funcion.RecompensaAleatoria(Ganador));
+                    Console.ReadLine();
+                }
+                Console.Clear();
+
+            } while (CantidadDePersonajes>1);
+            Console.WriteLine("\nEl Ganador y merecedor del Trono de Hierro es...");
+            Console.ReadLine();
+            Console.Clear();
+            Console.WriteLine("\nEs un " + Ganador.Datos.Tipo + " de " + Ganador.Datos.Edad + " años de edad!!...");
+            Console.ReadLine();
+            Console.Clear();
+            Console.WriteLine(Ganador.Datos.Nombre.ToUpper() + " " + Ganador.Datos.Apodo.ToUpper() + " FELICIDADES!!!...");
         }
     }
 }

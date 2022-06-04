@@ -11,16 +11,12 @@ namespace RPG
         DañoMax = 50000,
     }
     public class Personaje {
-        Datos datos = new Datos();
-        Caracteristicas caracteristicas = new Caracteristicas();
-
-        public Datos Datos {set;get;}
-
-        public Caracteristicas Caracteristicas {set;get;}
+        public Datos Datos = new Datos();
+        public Caracteristicas Caracteristicas = new Caracteristicas();
 
         public int Atacar(Personaje Defensor)
         {
-            float PoderDeAtaque = caracteristicas.Destreza * caracteristicas.Fuerza * caracteristicas.Nivel;
+            float PoderDeAtaque = Caracteristicas.Destreza * Caracteristicas.Fuerza * Caracteristicas.Nivel;
             float EfectividadDeDisparo = new Random().Next(20,50); //Le reduzco algo para que sea mas "equilibrado"
             float ValorDeAtaque = PoderDeAtaque * EfectividadDeDisparo;
             float PoderDeDefensa = Defensor.Caracteristicas.Armadura * Defensor.Caracteristicas.Velocidad;
@@ -31,7 +27,7 @@ namespace RPG
         }
     }
     public class Datos {
-        string tipo, nombre, apodo;
+        string tipo="", nombre="", apodo="";
         DateTime fechaDeNacimiento;
         int edad;     //  0 - 300
         int salud;  //  100

@@ -1,10 +1,8 @@
-using RPG;
-
 namespace RPG
 {
     public class Funcion
     {
-        public Personaje CargarDatos(Personaje NuevoPersonaje){
+        public Datos CargarDatos(Datos Datos){
             string[] Tipos = new string[] { "Duende", "Humano", "Orco", "Elfo", "Enano", "Lycan", "Trol", "No-muerto", "Lizzard" };
 
             string[] NombresHombre = new string[] { "John", "Mike", "Charlie", "Gabriel", "Patrick", "Arthur", "Smith" };
@@ -12,38 +10,37 @@ namespace RPG
 
             string[] Apodos = new string[] { "The Wrecker", "The Assassin", "The Stealthy", "The Dominator", "The Destroyer", "The Maniac", "The Ninja", "The Last Samurai", "The King", "The Emperator" };
 
-
-            NuevoPersonaje.Datos.Tipo = Tipos[new Random().Next(9)];
+            Datos.Tipo = Tipos[new Random().Next(9)];
 
             if (new Random().Next(1)==0)
             {
-                NuevoPersonaje.Datos.Nombre = NombresHombre[new Random().Next(6)];
+                Datos.Nombre = NombresHombre[new Random().Next(6)];
             }else
             {
-                NuevoPersonaje.Datos.Nombre = NombresMujer[new Random().Next(6)];
+                Datos.Nombre = NombresMujer[new Random().Next(6)];
                 
             }
 
-            NuevoPersonaje.Datos.Apodo = Apodos[new Random().Next(7)];
+            Datos.Apodo = Apodos[new Random().Next(7)];
 
-            NuevoPersonaje.Datos.FechaDeNacimiento = GenerarFecha();
-            NuevoPersonaje.Datos.Edad = CalcularEdad(NuevoPersonaje.Datos.FechaDeNacimiento);
-            NuevoPersonaje.Datos.Salud = (int)Maximos.SaludMax;
+            Datos.FechaDeNacimiento = GenerarFecha();
+            Datos.Edad = CalcularEdad(Datos.FechaDeNacimiento);
+            Datos.Salud = (int)Maximos.SaludMax;
 
-            return NuevoPersonaje;
+            return Datos;
         }
 
-        public Personaje CargarCaracteristicas(Personaje NuevoPersonaje){
-            NuevoPersonaje.Caracteristicas.Velocidad = new Random().Next(1, (int)Maximos.VelocidadMax);
-            NuevoPersonaje.Caracteristicas.Destreza = new Random().Next(1, (int)Maximos.DestrezaMax);
-            NuevoPersonaje.Caracteristicas.Fuerza = new Random().Next(1, (int)Maximos.FuerzaMax);
-            NuevoPersonaje.Caracteristicas.Nivel = new Random().Next(1, (int)Maximos.NivelMax);
-            NuevoPersonaje.Caracteristicas.Armadura = new Random().Next(1, (int)Maximos.ArmaduraMax);
+        public Caracteristicas CargarCaracteristicas(Caracteristicas Caracteristicas){
+            Caracteristicas.Velocidad = new Random().Next(1, (int)Maximos.VelocidadMax);
+            Caracteristicas.Destreza = new Random().Next(1, (int)Maximos.DestrezaMax);
+            Caracteristicas.Fuerza = new Random().Next(1, (int)Maximos.FuerzaMax);
+            Caracteristicas.Nivel = new Random().Next(1, (int)Maximos.NivelMax);
+            Caracteristicas.Armadura = new Random().Next(1, (int)Maximos.ArmaduraMax);
 
-            return NuevoPersonaje;
+            return Caracteristicas;
         }
 
-        internal string MostrarDatos(Personaje Personaje)
+        public string MostrarDatos(Personaje Personaje)
         {
             string Datos = "DATOS \n\n" +
             "Tipo: " + Personaje.Datos.Tipo + " \n" +
@@ -56,7 +53,7 @@ namespace RPG
             return Datos;
         }
 
-        internal string MostrarCaracteristicas(Personaje Personaje)
+        public string MostrarCaracteristicas(Personaje Personaje)
         {
             string Caracteristicas = "CARACTERISTICAS \n\n" +
             "Velocidad: " + Personaje.Caracteristicas.Velocidad + " \n" +
@@ -66,6 +63,32 @@ namespace RPG
             "Armadura: " + Personaje.Caracteristicas.Armadura + " \n";
 
             return Caracteristicas;
+        }
+
+        public string Combate(Personaje Atacante, Personaje Defensor)
+        {
+            string Informe;
+            int Daño = Atacante.Atacar(Defensor);
+            if(Daño == 0){
+                Informe = "INCREIBLEE!! " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " a esquivado el atacaque de " + Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + "\n";
+            }
+            else if (Daño <= 5)
+            {
+                Informe = Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " a tocado a " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " haciendole " + Daño + " de daño" + "\n";
+            }
+            else if (Daño <= 10)
+            {
+                Informe = Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " le ha hecho un rasguño a " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " infligiendole " + Daño + " de daño" + "\n";
+            }
+            else if(Daño <= 20)
+            {
+                Informe = Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " ha cortado a " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " provocandole " + Daño + " puntos de daño" + "\n";
+            }
+            else
+            {
+                Informe = "OHH NOOO!! " + Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " ha realizado un GOLPE CRITICO!! contra " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " costandole " + Daño + " puntos de salud" + "\n";
+            }
+            return Informe;
         }
 
         public DateTime GenerarFecha()

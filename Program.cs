@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
+
 namespace RPG
 {
     public class Program {
@@ -16,8 +17,8 @@ namespace RPG
             {
                 Personaje NuevoPersonaje = new Personaje();
 
-                NuevoPersonaje = Funcion.CargarDatos(NuevoPersonaje);
-                NuevoPersonaje = Funcion.CargarCaracteristicas(NuevoPersonaje);
+                NuevoPersonaje.Datos = Funcion.CargarDatos(NuevoPersonaje.Datos);
+                NuevoPersonaje.Caracteristicas = Funcion.CargarCaracteristicas(NuevoPersonaje.Caracteristicas);
 
                 ListaDePersonajes.Add(NuevoPersonaje);
             }
@@ -31,7 +32,25 @@ namespace RPG
             Console.WriteLine("\nPresiona ENTER para continuar...");
             Console.ReadLine();
             Console.Clear();
+            
 
+            int rand1=0,rand2=0;
+            Personaje Luchador1;
+            Personaje Luchador2;
+            do
+            {
+                rand1 = new Random().Next(CantidadDePersonajes);
+                rand2 = new Random().Next(CantidadDePersonajes);
+
+                Luchador1 = ListaDePersonajes[rand1];
+                Luchador2 = ListaDePersonajes[rand2];
+            } while (rand1==rand2);
+
+            for (int i = 0; i < 3; i++)
+            {
+                Console.WriteLine(Funcion.Combate(Luchador1, Luchador2));
+                Console.WriteLine(Funcion.Combate(Luchador2, Luchador1));
+            }
         }
     }
 }

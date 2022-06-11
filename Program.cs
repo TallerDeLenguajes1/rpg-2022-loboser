@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
-
 namespace RPG
 {
     public class Program {
@@ -57,6 +56,7 @@ namespace RPG
                 Console.ReadLine();
 
                 Ganador = Funcion.Ganador(Luchador1, Luchador2, ListaDePersonajes);
+                Funcion.EscribirGanadorEnArchivo(Ganador);
                 CantidadDePersonajes--;
                 if (CantidadDePersonajes != 1)
                 {
@@ -66,13 +66,7 @@ namespace RPG
                 Console.Clear();
 
             } while (CantidadDePersonajes>1);
-            Console.WriteLine("\nEl Ganador y merecedor del Trono de Hierro es...");
-            Console.ReadLine();
-            Console.Clear();
-            Console.WriteLine("\nEs un " + Ganador.Datos.Tipo + " de " + Ganador.Datos.Edad + " años de edad!!...");
-            Console.ReadLine();
-            Console.Clear();
-            Console.WriteLine(Ganador.Datos.Nombre.ToUpper() + " " + Ganador.Datos.Apodo.ToUpper() + " FELICIDADES!!!...");
+            Funcion.GanadorDelTronoDeHierro(Ganador);
         }
     }
 }

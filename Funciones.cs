@@ -151,6 +151,77 @@ namespace RPG
             return "\n" + Ganador.Datos.Nombre + " " + Ganador.Datos.Apodo + recompensa + "\n";
         }
 
+        public void GanadorDelTronoDeHierro(Personaje Ganador){
+            Console.WriteLine("\nEl Ganador y merecedor del Trono de Hierro es...");
+            Console.ReadLine();
+            Console.Clear();
+            Console.WriteLine("\nEs un " + Ganador.Datos.Tipo + " de " + Ganador.Datos.Edad + " años de edad!!...");
+            Console.ReadLine();
+            Console.Clear();
+            Console.WriteLine(Ganador.Datos.Nombre.ToUpper() + " " + Ganador.Datos.Apodo.ToUpper() + " FELICIDADES!!!...");
+        }
+
+        public void EscribirGanadorEnArchivo(Personaje Ganador){
+            if (File.Exists("Ganador.csv") && new FileInfo("Ganador.csv").Length > 0)
+            {
+                int bandera=0,aux=0;
+                string[] lineasDelArchivo = File.ReadAllLines("Ganador.csv");
+                var ListaDeLineas = new List<Lineas>();
+
+                foreach (var item in lineasDelArchivo)
+                {
+                    if (bandera!=0 && item !="")    // Bandera para evitar que ingrese la primera fila que seran los titulos de las columnas
+                    {
+                        string[] line = item.Split(';');
+
+                        var Linea = new Lineas();
+
+                        Linea.Nombre = line[1];
+                        Linea.Apodo = line[2];
+                        if (Ganador.Datos.Nombre == Linea.Nombre && Ganador.Datos.Apodo == Linea.Apodo)     //Si el ganador ya estaba en el .csv le añado su victoria actual
+                        {
+                            Linea.Ganadas = Convert.ToInt32(line[3]) + 1;
+                            aux = 1;   // Otra bandera para verificar que ya se conto la victoria
+                        }else
+                        {
+                            Linea.Ganadas = Convert.ToInt32(line[3]);
+                        
+                        }
+                        ListaDeLineas.Add(Linea);
+                    }
+                    bandera = 1;
+                }
+
+                if (aux == 0)  // Si es que el ganador no estaba en el csv se lo añade
+                {
+                    var Linea = new Lineas();
+
+                    Linea.Nombre = Ganador.Datos.Nombre;
+                    Linea.Apodo = Ganador.Datos.Apodo;
+                    Linea.Ganadas = 1;
+
+                    ListaDeLineas.Add(Linea);
+                }
+
+                ListaDeLineas = ListaDeLineas.OrderByDescending(linea => linea.Ganadas).ToList();   // Ordeno la lista segun la cantidad de victorias en orden descendiente
+
+                string[] nuevasLineas = new string[ListaDeLineas.LongCount()+1];
+                nuevasLineas[0] = "Top;Nombre;Apodo;Victorias";
+
+                int i = 1;
+                foreach (var linea in ListaDeLineas)
+                {
+                    nuevasLineas[i] = i + ";" + linea.Nombre + ";" + linea.Apodo + ";" + linea.Ganadas;
+                    i++;
+                }
+                File.WriteAllLines("Ganador.csv", nuevasLineas);
+            }else
+            {
+                string[] nuevasLineas = {"Top;Nombre;Apodo;Victorias", 1 + ";" + Ganador.Datos.Nombre + ";" + Ganador.Datos.Apodo + ";" + 1};
+                File.WriteAllLines("Ganador.csv", nuevasLineas);
+            }
+        }
+
         public DateTime GenerarFecha()
         {
             var anioActual = DateTime.Today.Year;
@@ -216,5 +287,14 @@ namespace RPG
         public int CalcularEdad(DateTime FechaDeNacimiento){
             return DateTime.Today.AddTicks(-FechaDeNacimiento.Ticks).Year - 1;;
         }
+    }
+    public class Lineas
+    {
+        int ganadas;
+        string nombre,apodo;
+
+        public int Ganadas { get => ganadas; set => ganadas = value; }
+        public string Nombre { get => nombre; set => nombre = value; }
+        public string Apodo { get => apodo; set => apodo = value; }
     }
 }

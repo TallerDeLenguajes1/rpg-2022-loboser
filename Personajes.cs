@@ -16,13 +16,13 @@ namespace RPG
 
         public int Atacar(Personaje Defensor)
         {
-            float PoderDeAtaque = Caracteristicas.Destreza * Caracteristicas.Fuerza * Caracteristicas.Nivel;
-            float EfectividadDeDisparo = new Random().Next(20,50); //Le reduzco algo para que sea mas "equilibrado"
-            float ValorDeAtaque = PoderDeAtaque * EfectividadDeDisparo;
-            float PoderDeDefensa = Defensor.Caracteristicas.Armadura * Defensor.Caracteristicas.Velocidad;
-            int DañoProvocado = (int)((((ValorDeAtaque * EfectividadDeDisparo) - PoderDeDefensa) / (int)Maximos.DañoMax) * 10);
+            float PD = Caracteristicas.Destreza * Caracteristicas.Fuerza * Caracteristicas.Nivel;
+            int ED = new Random().Next(20,50);      //Le reduzco algo para que sea mas "equilibrado" y no tan random el daño
+            float VA = PD * ED;
+            float PDEF = Defensor.Caracteristicas.Armadura * Defensor.Caracteristicas.Velocidad;
+            int DañoProvocado = (int)((((VA * ED) - PDEF) / (int)Maximos.DañoMax) * 10);
 
-            Defensor.Datos.Salud -= DañoProvocado;
+            Defensor.Datos.Salud -= DañoProvocado; 
             return DañoProvocado;
         }
     }

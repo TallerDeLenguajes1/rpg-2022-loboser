@@ -2,7 +2,8 @@ namespace RPG
 {
     public class Funcion
     {
-        public Datos CargarDatos(Datos Datos){
+        public Datos CargarDatos(){
+            var Datos = new Datos();
             string[] Tipos = new string[] { "Duende", "Humano", "Orco", "Elfo", "Enano", "Lycan", "Trol", "No-muerto", "Lizzard" };
 
             string[] NombresHombre = new string[] { "John", "Mike", "Charlie", "Gabriel", "Patrick", "Arthur", "Smith" };
@@ -30,7 +31,9 @@ namespace RPG
             return Datos;
         }
 
-        public Caracteristicas CargarCaracteristicas(Caracteristicas Caracteristicas){
+        public Caracteristicas CargarCaracteristicas(){
+            var Caracteristicas = new Caracteristicas();
+
             Caracteristicas.Velocidad = new Random().Next(1, (int)Maximos.VelocidadMax);
             Caracteristicas.Destreza = new Random().Next(1, (int)Maximos.DestrezaMax);
             Caracteristicas.Fuerza = new Random().Next(1, (int)Maximos.FuerzaMax);
@@ -65,30 +68,31 @@ namespace RPG
             return Caracteristicas;
         }
 
-        public string Combate(Personaje Atacante, Personaje Defensor)
+        public void Combate(Personaje Atacante, Personaje Defensor)
         {
-            string Informe;
-            int Daño = Atacante.Atacar(Defensor);
-            if(Daño == 0){
-                Informe = "INCREIBLEE!! " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " a esquivado el atacaque de " + Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + "\n";
-            }
-            else if (Daño <= 5)
+            if (Atacante.Datos.Salud>0)
             {
-                Informe = Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " a tocado a " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " haciendole " + Daño + " de daño" + "\n";
+                int Daño = Atacante.Atacar(Defensor);
+                if(Daño == 0){
+                    Console.WriteLine("INCREIBLEE!! " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " a esquivado el atacaque de " + Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + "\n");
+                }
+                else if (Daño <= 5)
+                {
+                    Console.WriteLine(Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " a tocado a " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " haciendole " + Daño + " de daño" + "\n");
+                }
+                else if (Daño <= 10)
+                {
+                    Console.WriteLine(Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " le ha hecho un rasguño a " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " infligiendole " + Daño + " de daño" + "\n");
+                }
+                else if(Daño <= 20)
+                {
+                    Console.WriteLine(Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " ha cortado a " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " provocandole " + Daño + " puntos de daño" + "\n");
+                }
+                else
+                {
+                    Console.WriteLine("OHH NOOO!! " + Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " ha realizado un GOLPE CRITICO!! contra " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " costandole " + Daño + " puntos de salud" + "\n");
+                }
             }
-            else if (Daño <= 10)
-            {
-                Informe = Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " le ha hecho un rasguño a " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " infligiendole " + Daño + " de daño" + "\n";
-            }
-            else if(Daño <= 20)
-            {
-                Informe = Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " ha cortado a " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " provocandole " + Daño + " puntos de daño" + "\n";
-            }
-            else
-            {
-                Informe = "OHH NOOO!! " + Atacante.Datos.Nombre + " " + Atacante.Datos.Apodo + " ha realizado un GOLPE CRITICO!! contra " + Defensor.Datos.Nombre + " " + Defensor.Datos.Apodo + " costandole " + Daño + " puntos de salud" + "\n";
-            }
-            return Informe;
         }
 
         public Personaje Ganador(Personaje Luchador1,Personaje Luchador2, List<Personaje> ListaDePersonajes){
@@ -111,8 +115,8 @@ namespace RPG
                 Luchador1.Datos.Salud = (int)Maximos.SaludMax;
                 Luchador2.Datos.Salud = (int)Maximos.SaludMax;
 
-                Console.WriteLine(Combate(Luchador1, Luchador2));
-                Console.WriteLine(Combate(Luchador2, Luchador1));
+                Combate(Luchador1, Luchador2);
+                Combate(Luchador2, Luchador1);
 
                 return Ganador(Luchador1, Luchador2, ListaDePersonajes);
             }
@@ -161,7 +165,7 @@ namespace RPG
             Console.WriteLine(Ganador.Datos.Nombre.ToUpper() + " " + Ganador.Datos.Apodo.ToUpper() + " FELICIDADES!!!...");
         }
 
-        public void EscribirGanadorEnArchivo(Personaje Ganador){
+        public void EscribirGanadorEnArchivoCSV(Personaje Ganador){
             if (File.Exists("Ganador.csv") && new FileInfo("Ganador.csv").Length > 0)
             {
                 int bandera=0,aux=0;

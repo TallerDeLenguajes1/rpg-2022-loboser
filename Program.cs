@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 namespace RPG
 {
     public class Program {
@@ -8,19 +10,64 @@ namespace RPG
             var ListaDePersonajes = new List<Personaje>();
             var Funcion = new Funcion();
             int CantidadDePersonajes = 0;
-            
-            Console.WriteLine("Ingresar la Cantidad de Personajes que lucharan: ");
-            CantidadDePersonajes = Convert.ToInt32(Console.ReadLine());
+            int Opcion = 0;
 
-            for (int i = 0; i < CantidadDePersonajes; i++)
+            string jsonString;
+            int bandera = 0;
+
+            do
             {
-                Personaje NuevoPersonaje = new Personaje();
+                Console.WriteLine("1. Crear Personajes Aleatoriamente");
+                Console.WriteLine("2. Cargar Personajes desde Archivo json");
+                Opcion = Convert.ToInt32(Console.ReadLine());
 
-                NuevoPersonaje.Datos = Funcion.CargarDatos(NuevoPersonaje.Datos);
-                NuevoPersonaje.Caracteristicas = Funcion.CargarCaracteristicas(NuevoPersonaje.Caracteristicas);
+                switch (Opcion)
+                {
+                    case 1:
+                        bandera = 1;
+                        Console.Write("Ingresar la Cantidad de Personajes que lucharan: ");
+                        CantidadDePersonajes = Convert.ToInt32(Console.ReadLine());
 
-                ListaDePersonajes.Add(NuevoPersonaje);
-            }
+                        for (int i = 0; i < CantidadDePersonajes; i++)
+                        {
+                            Personaje NuevoPersonaje = new Personaje();
+
+                            NuevoPersonaje.Datos = Funcion.CargarDatos();
+                            NuevoPersonaje.Caracteristicas = Funcion.CargarCaracteristicas();
+
+                            ListaDePersonajes.Add(NuevoPersonaje);
+                        }
+
+                        using(var Archivo = new FileStream("Personajes.json", FileMode.Create)){
+                            jsonString = JsonSerializer.Serialize(ListaDePersonajes);
+                            using(var StreamWriter = new StreamWriter(Archivo)){
+                                StreamWriter.Write(jsonString);
+                            }
+                        }
+                    break;
+                    case 2:
+                        if (File.Exists("Personajes.json") && new FileInfo("Personajes.json").Length > 0)
+                        {
+                            bandera = 1;
+                            using(var StreamReader = new StreamReader("personajes.json")){
+                                jsonString = StreamReader.ReadToEnd();
+                                ListaDePersonajes = JsonSerializer.Deserialize<List<Personaje>>(jsonString);
+                            }
+                        }else
+                        {
+                            Console.WriteLine("El archivo Personajes.json no existe o esta vacio!");
+                            Console.WriteLine("\nPresiona ENTER para volver a ingresar una opcion...");
+                            Console.ReadLine();
+                            Console.Clear();
+                        }
+                    break;
+                    default:
+                    bandera = 0;
+                    break;
+                } 
+            } while (Opcion<1 || Opcion>2 || bandera == 0);
+
+            CantidadDePersonajes = ListaDePersonajes.Count;
 
             for(int i = 0; i < CantidadDePersonajes; i++)
             {
@@ -46,17 +93,19 @@ namespace RPG
                 Luchador1 = ListaDePersonajes[rand1];
                 Luchador2 = ListaDePersonajes[rand2];
 
-                for (int i = 0; i < 3; i++)
+                int i = 3;
+                while (Luchador1.Datos.Salud > 0 && Luchador2.Datos.Salud > 0 && i > 0)
                 {
-                    Console.WriteLine(Funcion.Combate(Luchador1, Luchador2));
-                    Console.WriteLine(Funcion.Combate(Luchador2, Luchador1));
+                    Funcion.Combate(Luchador1, Luchador2);
+                    Funcion.Combate(Luchador2, Luchador1);
+                    i--;
                 }
 
                 Console.WriteLine("\nEl Ganador del combate es...");
                 Console.ReadLine();
 
                 Ganador = Funcion.Ganador(Luchador1, Luchador2, ListaDePersonajes);
-                Funcion.EscribirGanadorEnArchivo(Ganador);
+                Funcion.EscribirGanadorEnArchivoCSV(Ganador);
                 CantidadDePersonajes--;
                 if (CantidadDePersonajes != 1)
                 {

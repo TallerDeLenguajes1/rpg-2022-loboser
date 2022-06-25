@@ -1,3 +1,7 @@
+using System.Net; 
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace RPG
 {
     public class Funcion
@@ -6,21 +10,26 @@ namespace RPG
             var Datos = new Datos();
             string[] Tipos = new string[] { "Duende", "Humano", "Orco", "Elfo", "Enano", "Lycan", "Trol", "No-muerto", "Lizzard" };
 
-            string[] NombresHombre = new string[] { "John", "Mike", "Charlie", "Gabriel", "Patrick", "Arthur", "Smith" };
-            string[] NombresMujer = new string[] { "Ashley", "Nancy", "Abby", "Evie", "Johanna", "Sistine", "Amelia" };
+            //string[] NombresHombre = new string[] { "John", "Mike", "Charlie", "Gabriel", "Patrick", "Arthur", "Smith" };
+            //string[] NombresMujer = new string[] { "Ashley", "Nancy", "Abby", "Evie", "Johanna", "Sistine", "Amelia" };
 
             string[] Apodos = new string[] { "The Wrecker", "The Assassin", "The Stealthy", "The Dominator", "The Destroyer", "The Maniac", "The Ninja", "The Last Samurai", "The King", "The Emperator" };
 
             Datos.Tipo = Tipos[new Random().Next(9)];
 
+            Datos.Nombre = ObtenerNombreAleatorio();
+
+            /*
+            
             if (new Random().Next(1)==0)
             {
                 Datos.Nombre = NombresHombre[new Random().Next(6)];
             }else
             {
                 Datos.Nombre = NombresMujer[new Random().Next(6)];
-                
             }
+
+            */
 
             Datos.Apodo = Apodos[new Random().Next(7)];
 
@@ -290,6 +299,35 @@ namespace RPG
 
         public int CalcularEdad(DateTime FechaDeNacimiento){
             return DateTime.Today.AddTicks(-FechaDeNacimiento.Ticks).Year - 1;;
+        }
+
+        private static string ObtenerNombreAleatorio(){
+            var url = $"https://random-names-api.herokuapp.com/random";
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            request.ContentType = "application/json";
+            request.Accept = "application/json";
+
+            try
+            {
+                using(WebResponse response = request.GetResponse()){
+                    using (Stream strReader = response.GetResponseStream())
+                    {
+                        if (strReader == null) return null;
+                        using (StreamReader objReader = new StreamReader(strReader))
+                        {
+                            string responseBody = objReader.ReadToEnd();
+                            Root Nombre = JsonSerializer.Deserialize<Root>(responseBody);
+                            return Nombre.body.name;
+                        }
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                
+                throw;
+            }
         }
     }
     public class Lineas

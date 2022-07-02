@@ -8,6 +8,96 @@ namespace RPG
     {
         public Datos CargarDatos(){
             var Datos = new Datos();
+            string[] Tipos = new string[] { "Humano", "Duende", "Orco", "Elfo", "Enano", "Lycan", "Trol", "No-muerto", "Lizzard" };
+            int opcion = 0;
+
+            do
+            {
+                Console.WriteLine("Raza del personaje:\n1. Humano\n2. Duende\n3. Orco\n4. Elfo\n5. Enano\n6. Lycan\n7. Trol\n8. No-muerto\n9. Lizzard");
+                opcion = Convert.ToInt32(Console.ReadLine());
+                Console.Clear();
+            } while (opcion<1 || opcion>10);
+
+            Datos.Tipo = Tipos[opcion-1];
+
+            Console.WriteLine("Nombre: ");
+            Datos.Nombre = Convert.ToString(Console.ReadLine());
+            Console.WriteLine("Apodo: ");
+            Datos.Apodo = Convert.ToString(Console.ReadLine());
+
+
+            Datos.FechaDeNacimiento = GenerarFecha();
+            Datos.Edad = CalcularEdad(Datos.FechaDeNacimiento);
+            Datos.Salud = (int)Maximos.SaludMax;
+            Console.Clear();
+            return Datos;
+        }
+
+        public Caracteristicas CargarCaracteristicas(){
+            var Caracteristicas = new Caracteristicas();
+            int puntos = 25;
+            int pntAGastar = 0;
+
+
+            Console.WriteLine("Ahora Tendras que elegir como gastar tus " + puntos + " puntos entre las diversas caracteristicas (Velocidad, Destreza, Fuerza, Nivel y Armadura)");
+            Console.WriteLine("ENTER Para Continuar...");
+            Console.ReadLine();
+            Console.Clear();
+
+            do
+            {
+                Console.WriteLine("Tienes " + puntos + " puntos para gastar");
+                Console.WriteLine("Velocidad (0-9): ");
+                pntAGastar = Convert.ToInt32(Console.ReadLine());
+                Console.Clear();
+            } while (pntAGastar<0 || pntAGastar>9 || pntAGastar>puntos);
+            puntos -= pntAGastar;
+            Caracteristicas.Velocidad = 1 + pntAGastar;
+
+            do
+            {
+                Console.WriteLine("Te quedan " + puntos + " puntos para gastar");
+                Console.WriteLine("Destreza (0-4): ");
+                pntAGastar = Convert.ToInt32(Console.ReadLine());
+                Console.Clear();
+            } while (pntAGastar<0 || pntAGastar>4 || pntAGastar>puntos);
+            puntos -= pntAGastar;
+            Caracteristicas.Destreza = 1 + pntAGastar;
+
+            do
+            {
+                Console.WriteLine("Te quedan " + puntos + " puntos para gastar");
+                Console.WriteLine("Fuerza (0-9): ");
+                pntAGastar = Convert.ToInt32(Console.ReadLine());
+                Console.Clear();
+            } while (pntAGastar<0 || pntAGastar>9 || pntAGastar>puntos);
+            puntos -= pntAGastar;
+            Caracteristicas.Fuerza = 1 + pntAGastar;
+
+            do
+            {
+                Console.WriteLine("Te quedan " + puntos + " puntos para gastar");
+                Console.WriteLine("Nivel (0-9): ");
+                pntAGastar = Convert.ToInt32(Console.ReadLine());
+                Console.Clear();
+            } while (pntAGastar<0 || pntAGastar>9 || pntAGastar>puntos);
+            puntos -= pntAGastar;
+            Caracteristicas.Nivel = 1 + pntAGastar;
+
+            do
+            {
+                Console.WriteLine("Te quedan " + puntos + " puntos para gastar");
+                Console.WriteLine("Armadura (0-9): ");
+                pntAGastar = Convert.ToInt32(Console.ReadLine());
+                Console.Clear();
+            } while (pntAGastar<0 || pntAGastar>9 || pntAGastar>puntos);
+            puntos -= pntAGastar;
+            Caracteristicas.Armadura = 1 + pntAGastar;
+
+            return Caracteristicas;
+        }
+        public Datos CargarDatosAleatorios(){
+            var Datos = new Datos();
             string[] Tipos = new string[] { "Duende", "Humano", "Orco", "Elfo", "Enano", "Lycan", "Trol", "No-muerto", "Lizzard" };
 
             //string[] NombresHombre = new string[] { "John", "Mike", "Charlie", "Gabriel", "Patrick", "Arthur", "Smith" };
@@ -33,25 +123,23 @@ namespace RPG
 
             Datos.Apodo = Apodos[new Random().Next(7)];
 
-            Datos.FechaDeNacimiento = GenerarFecha();
+            Datos.FechaDeNacimiento = GenerarFechaAleatoria();
             Datos.Edad = CalcularEdad(Datos.FechaDeNacimiento);
             Datos.Salud = (int)Maximos.SaludMax;
 
             return Datos;
         }
-
-        public Caracteristicas CargarCaracteristicas(){
+        public Caracteristicas CargarCaracteristicasAleatorias(int Escalado){
             var Caracteristicas = new Caracteristicas();
 
-            Caracteristicas.Velocidad = new Random().Next(1, (int)Maximos.VelocidadMax);
-            Caracteristicas.Destreza = new Random().Next(1, (int)Maximos.DestrezaMax);
-            Caracteristicas.Fuerza = new Random().Next(1, (int)Maximos.FuerzaMax);
-            Caracteristicas.Nivel = new Random().Next(1, (int)Maximos.NivelMax);
-            Caracteristicas.Armadura = new Random().Next(1, (int)Maximos.ArmaduraMax);
+            Caracteristicas.Velocidad = new Random().Next(1, ((int)Maximos.VelocidadMax + Escalado));
+            Caracteristicas.Destreza = new Random().Next(1, ((int)Maximos.DestrezaMax + Escalado));
+            Caracteristicas.Fuerza = new Random().Next(1, ((int)Maximos.FuerzaMax + Escalado));
+            Caracteristicas.Nivel = new Random().Next(1, ((int)Maximos.NivelMax + Escalado));
+            Caracteristicas.Armadura = new Random().Next(1, ((int)Maximos.ArmaduraMax + Escalado));
 
             return Caracteristicas;
         }
-
         public string MostrarDatos(Personaje Personaje)
         {
             string Datos = "DATOS \n\n" +
@@ -104,6 +192,21 @@ namespace RPG
             }
         }
 
+        public bool GanadorAventura(Personaje PersonajePrincial,Personaje Enemigo){
+            if (PersonajePrincial.Datos.Salud >= Enemigo.Datos.Salud)
+            {
+                PersonajePrincial.Datos.Salud = (int)Maximos.SaludMax;
+                return true;
+            }
+            else if(Enemigo.Datos.Salud > PersonajePrincial.Datos.Salud)
+            {
+                PersonajePrincial.Datos.Salud = (int)Maximos.SaludMax;
+                Enemigo.Datos.Salud = (int)Maximos.SaludMax;
+                return false;
+            }
+            return true;
+        }
+
         public Personaje Ganador(Personaje Luchador1,Personaje Luchador2, List<Personaje> ListaDePersonajes){
             if (Luchador1.Datos.Salud > Luchador2.Datos.Salud)
             {
@@ -130,7 +233,38 @@ namespace RPG
                 return Ganador(Luchador1, Luchador2, ListaDePersonajes);
             }
         }
-
+         public void ElegirRecompensa(Personaje PersonajePrincipal)
+        {
+            int opcion = 0;
+            Console.Write("\n1. Velocidad + 4\n2. Destreza + 2\n3. Fuerza + 4\n4. Nievel + 4\n5. Armadura + 4\n\nIngresar la recompensa a elegir: ");
+            do
+            {
+                opcion = Convert.ToInt32(Console.ReadLine());
+            } while (opcion<1 || opcion>5);
+            switch (opcion)
+            {
+                case 1:
+                    PersonajePrincipal.Caracteristicas.Velocidad += 4;
+                    Console.WriteLine("Su Personaje Ha Recibido + 4 puntos de Velocidad!");
+                    break;
+                case 2:
+                    PersonajePrincipal.Caracteristicas.Destreza += 2;
+                    Console.WriteLine("Su Personaje Ha Recibido + 2 puntos de Destreza!");
+                    break;
+                case 3:
+                    PersonajePrincipal.Caracteristicas.Fuerza += 4;
+                    Console.WriteLine("Su Personaje Ha Recibido + 4 puntos de Fuerza!");
+                    break;
+                case 4:
+                    PersonajePrincipal.Caracteristicas.Nivel += 4;
+                    Console.WriteLine("Su Personaje Ha Recibido + 4 Niveles!");
+                    break;
+                case 5:
+                    PersonajePrincipal.Caracteristicas.Armadura += 4;
+                    Console.WriteLine("Su Personaje Ha Recibido + 4 puntos de Armadura!");
+                    break;
+            }
+        }
         public string RecompensaAleatoria(Personaje Ganador)
         {
             string recompensa;
@@ -238,6 +372,86 @@ namespace RPG
         public DateTime GenerarFecha()
         {
             var anioActual = DateTime.Today.Year;
+            int anio = 0, mes = 0, dia = 0;
+
+            Console.WriteLine("Fecha De Nacimiento:");
+            do
+            {
+                Console.Write("Anio (" + (anioActual-300) + "-" + (anioActual-18) +  "): ");
+                anio = Convert.ToInt32(Console.ReadLine());
+            } while (anio<anioActual-300 || anio>anioActual-18);
+
+            do
+            {
+                Console.Write("Mes (1-12): ");
+                mes = Convert.ToInt32(Console.ReadLine());
+            } while (mes<1 || mes>12);
+        
+            int aux = 0;
+
+            switch (mes)
+            {
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                case 12:
+                    aux = 1; break;
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    aux = 2; break;
+                case 2:
+                    if (Bisiesto(anio))
+                    {
+                        aux = 3;
+                    }
+                    else
+                    {
+                        aux = 4;
+                    }
+                    break;
+            }
+
+            switch (aux)
+            {
+                case 1: 
+                    do
+                    {
+                        Console.Write("Dia (1-31): ");
+                        dia = Convert.ToInt32(Console.ReadLine());
+                    } while (dia<1 || dia>31);
+                break;
+                case 2: 
+                    do
+                    {
+                        Console.Write("Dia (1-30): ");
+                        dia = Convert.ToInt32(Console.ReadLine());
+                    } while (dia<1 || dia>30);
+                break;
+                case 3:
+                    do
+                    {
+                        Console.Write("Dia (1-29): ");
+                        dia = Convert.ToInt32(Console.ReadLine());
+                    } while (dia<1 || dia>29);
+                break;
+                case 4:
+                    do
+                    {
+                        Console.Write("Dia (1-28): ");
+                        dia = Convert.ToInt32(Console.ReadLine());
+                    } while (dia<1 || dia>28);
+                break;
+            }
+            return new DateTime(anio, mes, dia);
+        }
+        public DateTime GenerarFechaAleatoria()
+        {
+            var anioActual = DateTime.Today.Year;
             var mesActual = DateTime.Today.Month;
             var diaActual = DateTime.Today.Day;
 
@@ -281,8 +495,7 @@ namespace RPG
                 case 4: dia = new Random().Next(1, 28); break;
             }
 
-            var FechaDeNacimiento = new DateTime(anio, mes, dia);
-            return FechaDeNacimiento;
+            return new DateTime(anio, mes, dia);
         }
 
         public bool Bisiesto(int anio)
@@ -327,6 +540,74 @@ namespace RPG
             {
                 
                 throw;
+            }
+        }
+
+        public void MostrarPersonajesGuardados(List<AventuraGuardada> ListaDeAventuraGuardada){
+            int i = 1; 
+            foreach (var aventura in ListaDeAventuraGuardada)
+            {
+                Console.WriteLine(i + ". " + aventura.PersonajePrincipal.Datos.Nombre + " PISO N" + aventura.Piso);
+                i++;
+            }
+        }
+
+        public void GuardarYSalir(Personaje PersonajePrincipal, Personaje Enemigo, int Piso){
+            if (File.Exists("Aventura.json") && new FileInfo("Aventura.json").Length > 0)
+            {
+                var StreamReader = new StreamReader("Aventura.json");
+                var jsonString = StreamReader.ReadToEnd();
+                StreamReader.Close();
+
+                var ListaDeAventuraGuardada = JsonSerializer.Deserialize<List<AventuraGuardada>>(jsonString);
+
+                var AventuraGuardada = new AventuraGuardada();
+
+                AventuraGuardada.Enemigo = Enemigo;
+                AventuraGuardada.PersonajePrincipal = PersonajePrincipal;
+                AventuraGuardada.Piso = Piso;
+
+                Console.WriteLine("Guardar en: ");
+                MostrarPersonajesGuardados(ListaDeAventuraGuardada);
+                Console.WriteLine(ListaDeAventuraGuardada.Count+1 + ". Guardado Nuevo");
+
+                int guardarLugar = 0;
+                do
+                {
+                    guardarLugar = Convert.ToInt32(Console.ReadLine());
+                } while (guardarLugar<1 || guardarLugar>ListaDeAventuraGuardada.Count+1);
+
+                if (guardarLugar == ListaDeAventuraGuardada.Count+1)
+                {
+                    ListaDeAventuraGuardada.Add(AventuraGuardada);
+                }else
+                {
+                    ListaDeAventuraGuardada[guardarLugar-1] = AventuraGuardada;
+                }
+
+                jsonString = JsonSerializer.Serialize(ListaDeAventuraGuardada);
+                using (var StreamWriter = new StreamWriter("Aventura.json"))
+                {
+                    StreamWriter.Write(jsonString);
+                }
+            }else
+            {
+                using (var Archivo = new FileStream("Aventura.json", FileMode.Create))
+                {
+                    var ListaDeAventuraGuardada = new List<AventuraGuardada>();
+                    var AventuraGuardada = new AventuraGuardada();
+
+                    AventuraGuardada.Enemigo = Enemigo;
+                    AventuraGuardada.PersonajePrincipal = PersonajePrincipal;
+                    AventuraGuardada.Piso = Piso;
+                    ListaDeAventuraGuardada.Add(AventuraGuardada);
+
+                    var jsonString = JsonSerializer.Serialize(ListaDeAventuraGuardada);
+                    using (var StreamWriter = new StreamWriter(Archivo))
+                    {
+                        StreamWriter.Write(jsonString);
+                    }
+                }
             }
         }
     }

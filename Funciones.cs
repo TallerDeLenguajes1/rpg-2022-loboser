@@ -311,7 +311,7 @@ namespace RPG
         public void EscribirGanadorEnArchivoCSV(Personaje Ganador){
             if (File.Exists("Ganador.csv") && new FileInfo("Ganador.csv").Length > 0)
             {
-                int bandera=0,aux=0;
+                int bandera=0,anotado=0;
                 string[] lineasDelArchivo = File.ReadAllLines("Ganador.csv");
                 var ListaDeLineas = new List<Lineas>();
 
@@ -328,18 +328,17 @@ namespace RPG
                         if (Ganador.Datos.Nombre == Linea.Nombre && Ganador.Datos.Apodo == Linea.Apodo)     //Si el ganador ya estaba en el .csv le añado su victoria actual
                         {
                             Linea.Ganadas = Convert.ToInt32(line[3]) + 1;
-                            aux = 1;   // Otra bandera para verificar que ya se conto la victoria
+                            anotado = 1;   // Otra bandera para verificar que ya se conto la victoria
                         }else
                         {
                             Linea.Ganadas = Convert.ToInt32(line[3]);
-                        
                         }
                         ListaDeLineas.Add(Linea);
                     }
                     bandera = 1;
                 }
 
-                if (aux == 0)  // Si es que el ganador no estaba en el csv se lo añade
+                if (anotado == 0)  // Si es que el ganador no estaba en el csv se lo añade
                 {
                     var Linea = new Lineas();
 

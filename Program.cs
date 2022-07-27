@@ -51,7 +51,7 @@ namespace RPG
                 switch (opcion)
                 {
                     case 1:
-                        bandera = 1;
+                        bandera = 0;
                         PersonajePrincipal.Datos = Funcion.CargarDatos();
                         PersonajePrincipal.Caracteristicas = Funcion.CargarCaracteristicas();
                         carga = false;
@@ -59,7 +59,7 @@ namespace RPG
                     case 2:
                         if (File.Exists("Aventura.json") && new FileInfo("Aventura.json").Length > 0)
                         {
-                            bandera = 1;
+                            bandera = 0;
                             var StreamReader = new StreamReader("Aventura.json");
                             var jsonString = StreamReader.ReadToEnd();
                             StreamReader.Close();
@@ -80,6 +80,7 @@ namespace RPG
                             carga = true;
                         }else
                         {
+                            bandera = 1;
                             Console.WriteLine("El archivo Aventura.json no existe o esta vacio!");
                             Console.WriteLine("\nPresiona ENTER para volver a ingresar una opcion...");
                             Console.ReadLine();
@@ -87,7 +88,7 @@ namespace RPG
                         }
                     break;
                 }
-            } while (opcion < 1 || opcion >2 || bandera == 0);
+            } while (opcion < 1 || opcion >2 || bandera == 1);
 
             do
             {
@@ -123,22 +124,26 @@ namespace RPG
                     {
                         carga = false;
                         Console.WriteLine("\nHas ganado y podras elegir tu recompensa!");
+                        Thread.Sleep(1000);
                         Funcion.ElegirRecompensa(PersonajePrincipal);
+                        Thread.Sleep(1000);
                     }else
                     {
                         Console.WriteLine("\nDerrota, podras intentarlo nuevamente en otra ocasion, podras guardar tu progreso a continuacion.");
+                        Thread.Sleep(1000);
                         Funcion.GuardarYSalir(PersonajePrincipal, Enemigo, piso);
                         salir = 0;
                     }
                 }else
                 {
                     Funcion.GuardarYSalir(PersonajePrincipal, Enemigo, piso);
+                    Console.WriteLine("\nGuardado con Exito!");
+                    Thread.Sleep(1000);
+
                     salir = 0;
                 }
                 piso++;
             } while (salir != 0);
-            
-            
         }
         public static void ModoTodosContraTodos(){
             var ListaDePersonajes = new List<Personaje>();
@@ -158,7 +163,7 @@ namespace RPG
                 switch (opcion)
                 {
                     case 1:
-                        bandera = 1;
+                        bandera = 0;
                         Console.Write("Ingresar la Cantidad de Personajes que lucharan: ");
                         cantidadDePersonajes = Convert.ToInt32(Console.ReadLine());
 
@@ -182,13 +187,14 @@ namespace RPG
                     case 2:
                         if (File.Exists("Personajes.json") && new FileInfo("Personajes.json").Length > 0)
                         {
-                            bandera = 1;
+                            bandera = 0;
                             using(var StreamReader = new StreamReader("personajes.json")){
                                 jsonString = StreamReader.ReadToEnd();
                                 ListaDePersonajes = JsonSerializer.Deserialize<List<Personaje>>(jsonString);
                             }
                         }else
                         {
+                            bandera = 1;
                             Console.WriteLine("El archivo Personajes.json no existe o esta vacio!");
                             Console.WriteLine("\nPresiona ENTER para volver a ingresar una opcion...");
                             Console.ReadLine();
@@ -199,7 +205,7 @@ namespace RPG
                     bandera = 0;
                     break;
                 } 
-            } while (opcion<1 || opcion>2 || bandera == 0);
+            } while (opcion<1 || opcion>2 || bandera == 1);
 
             cantidadDePersonajes = ListaDePersonajes.Count;
 
